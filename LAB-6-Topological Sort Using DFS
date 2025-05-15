@@ -1,0 +1,60 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX 100
+
+int adj[MAX][MAX];     // Adjacency matrix
+int visited[MAX];      // Visited array
+int stack[MAX];        // Stack for storing the topological order
+int top = -1;
+int V;                 // Number of vertices
+
+// Function to add a directed edge u -> v
+void addEdge(int u, int v) {
+    adj[u][v] = 1;
+}
+
+// DFS function
+void dfs(int v) {
+    visited[v] = 1;
+
+    for (int i = 0; i < V; i++) {
+        if (adj[v][i] && !visited[i]) {
+            dfs(i);
+        }
+    }
+
+    stack[++top] = v;  // Push node to stack after visiting all descendants
+}
+
+// Function to perform Topological Sort
+void topologicalSort() {
+    for (int i = 0; i < V; i++)
+        visited[i] = 0;
+
+    for (int i = 0; i < V; i++) {
+        if (!visited[i])
+            dfs(i);
+    }
+
+    printf("Topological Sort (DFS): ");
+    while (top >= 0)
+        printf("%d ", stack[top--]);
+    printf("\n");
+}
+
+// Main function for testing
+int main() {
+    V = 6;  // Example: 6 vertices (0 to 5)
+
+    addEdge(5, 2);
+    addEdge(5, 0);
+    addEdge(4, 0);
+    addEdge(4, 1);
+    addEdge(2, 3);
+    addEdge(3, 1);
+
+    topologicalSort();
+
+    return 0;
+}
