@@ -14,20 +14,33 @@ struct Graph {
     struct Edge edge[E];
 };
 
-int parent[V];
+int parent[V];  // Disjoint-set parent array
+int rank[V];    // Rank for union by rank
 
-// Find set of an element i (basic find without path compression)
+// Find set of an element i (with path compression)
 int find(int i) {
-    while (i != parent[i])
-        i = parent[i];
-    return i;
+    if (i != parent[i]) {
+        parent[i] = find(parent[i]);  // Path compression
+    }
+    return parent[i];
 }
 
-// Union of two sets
+// Union of two sets (with union by rank)
 void unionSet(int u, int v) {
     int uroot = find(u);
     int vroot = find(v);
-    parent[uroot] = vroot;
+
+    if (uroot != vroot) {
+        // Union by rank
+        if (rank[uroot] > rank[vroot]) {
+            parent[vroot] = uroot;
+        } else if (rank[uroot] < rank[vroot]) {
+            parent[uroot] = vroot;
+        } else {
+            parent[vroot] = uroot;
+            rank[uroot]++;
+        }
+    }
 }
 
 // Compare edges by weight for qsort
@@ -40,30 +53,40 @@ void kruskalMST(struct Graph* graph) {
     struct Edge result[V];  // Store MST result
     int e = 0;              // Edge count in result
     int i = 0;
+    int totalWeight = 0;     // Variable to track the total weight of the MST
 
     // Initialize disjoint sets
-    for (int v = 0; v < V; v++)
+    for (int v = 0; v < V; v++) {
         parent[v] = v;
+        rank[v] = 0;  // Initialize rank as 0
+    }
 
     // Sort edges by weight
     qsort(graph->edge, E, sizeof(graph->edge[0]), compareEdges);
 
+    // Process edges
     while (e < V - 1 && i < E) {
         struct Edge next_edge = graph->edge[i++];
 
         int x = find(next_edge.src);
         int y = find(next_edge.dest);
 
-        if (x != y) {
+        if (x != y) {  // If adding this edge does not form a cycle
             result[e++] = next_edge;
+            totalWeight += next_edge.weight;  // Add the weight of the edge to the total weight
             unionSet(x, y);
         }
     }
 
-    // Print MST
+    // Print MST edges
+    printf("Minimum Spanning Tree (MST) edges:\n");
     printf("Edge \tWeight\n");
-    for (i = 0; i < e; i++)
+    for (i = 0; i < e; i++) {
         printf("%d - %d \t%d\n", result[i].src, result[i].dest, result[i].weight);
+    }
+
+    // Print the total weight of the MST
+    printf("Total weight of MST: %d\n", totalWeight);
 }
 
 // Main function
