@@ -1,0 +1,6 @@
+Minimum Spanning Tree (Kruskal's Algorithm):
+Edge 	Weight
+3 - 4 	2
+2 - 3 	4
+0 - 3 	5
+0 - 1 	10
