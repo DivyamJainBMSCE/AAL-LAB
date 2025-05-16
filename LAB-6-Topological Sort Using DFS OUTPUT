@@ -1,0 +1,9 @@
+Enter number of vertices and edges: 5 5
+Enter edges (u v) 0-based indexing:
+1 1
+2 2
+3 3
+4 4
+5 5
+Topological Order:
+4 3 2 1 0
