@@ -51,7 +51,7 @@ void printArray(int arr[], int n) {
 
 // Driver code
 int main() {
-    int arr[] = {12, 11, 13, 5, 6, 7};
+    int arr[] = {12, 25, 13, 15, 6, 7};
     int n = sizeof(arr) / sizeof(arr[0]);
 
     printf("Original array:\n");
